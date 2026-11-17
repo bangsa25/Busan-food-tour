@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부산 미식 여행</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  color: #263238;
+}
+
+header {
+  background: #123b55;
+  color: white;
+  padding: 22px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 { font-size: 24px; }
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.hero {
+  height: 370px;
+  background: linear-gradient(#0006,#0007),
+  url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600')
+  center/cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.hero h2 {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.hero p { font-size: 18px; }
+
+.container {
+  max-width: 1200px;
+  margin: 55px auto;
+  padding: 0 22px;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.search {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.categories {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.categories button {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  background: #e3e9ee;
+}
+
+.categories button.active {
+  background: #123b55;
+  color: white;
+}
+
+.restaurant-list {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px #00000012;
+  transition: .2s;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.card-content { padding: 20px; }
+
+.tag {
+  display: inline-block;
+  background: #e8f2f7;
+  color: #20536c;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.rating {
+  color: #e49a1c !important;
+  font-weight: bold;
+}
+
+.map-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.map-buttons a {
+  flex: 1;
+  text-align: center;
+  padding: 11px 5px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.naver {
+  background: #03c75a;
+  color: white;
+}
+
+.kakao {
+  background: #fee500;
+  color: #222;
+}
+
+.direction {
+  display: block;
+  margin-top: 9px;
+  padding: 11px;
+  text-align: center;
+  background: #123b55;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.no-result {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  grid-column: 1/-1;
+}
+
+.info {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  line-height: 2;
+}
+
+footer {
+  background: #123b55;
+  color: white;
+  text-align: center;
+  padding: 35px;
+  margin-top: 60px;
+}
+
+@media(max-width:850px) {
+  .restaurant-list {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media(max-width:550px) {
+  .restaurant-list { grid-template-columns: 1fr; }
+  header { flex-direction: column; gap: 15px; }
+  nav a { margin: 0 8px; }
+  .hero h2 { font-size: 30px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌊 BUSAN FOOD TOUR</h1>
+  <nav>
+    <a href="#home">홈</a>
+    <a href="#restaurants">맛집</a>
+    <a href="#about">소개</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <h2>부산의 맛을 찾아서</h2>
+  <p>바다와 도시가 만나는 특별한 미식 여행</p>
+</section>
+
+<main class="container" id="restaurants">
+
+<h2 class="section-title">🍽️ 부산 인기 맛집</h2>
+
+<input
+  class="search"
+  id="search"
+  type="text"
+  placeholder="맛집 이름, 지역, 메뉴 검색..."
+  oninput="renderRestaurants()"
+>
+
+<div class="categories">
+  <button class="active" onclick="setCategory('전체',this)">전체</button>
+  <button onclick="setCategory('한식',this)">한식</button>
+  <button onclick="setCategory('해산물',this)">해산물</button>
+  <button onclick="setCategory('고기',this)">고기</button>
+  <button onclick="setCategory('양식',this)">양식</button>
+  <button onclick="setCategory('카페',this)">카페</button>
+  <button onclick="setCategory('분식',this)">분식</button>
+</div>
+
+<div class="restaurant-list" id="restaurantList"></div>
+
+</main>
+
+<section class="container" id="about">
+  <h2 class="section-title">🌴 부산 미식 여행</h2>
+  <div class="info">
+    <h3>부산의 특별한 먹거리</h3>
+    부산은 돼지국밥과 밀면부터 신선한 해산물,
+    다양한 디저트까지 즐길 수 있는 미식 도시입니다.
+    <br>
+    이 웹사이트에서 부산의 다양한 맛집을 찾아보고
+    지도를 통해 직접 방문해 보세요!
+    <br><br>
+    📍 여행 지역: 해운대, 남포동, 서면, 기장, 영도
+  </div>
+</section>
+
+<footer>
+  <h3>🌊 BUSAN FOOD TOUR</h3>
+  <p>당신의 부산 여행이 맛있는 추억으로 남기를!</p>
+  <p>© 2026 Busan Food Guide</p>
+</footer>
+
+<script>
+
+// 맛집 데이터
+const restaurants = [
+{
+name:"미포집 해운대본점",
+category:"해산물",
+area:"해운대",
+menu:"해물장 정식 · 전복솥밥",
+address:"부산 해운대구 달맞이길62번길 3",
+desc:"다양한 해산물과 솥밥을 즐기는 한식 맛집",
+image:"https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=700"
+},
+{
+name:"해운대암소갈비집",
+category:"고기",
+area:"해운대",
+menu:"생갈비 · 양념갈비",
+address:"부산 해운대구 해운대해변로 333",
+desc:"한우 갈비로 유명한 부산 대표 고깃집",
+image:"https://images.unsplash.com/photo-1544025162-d76694265947?w=700"
+},
+{
+name:"이재모피자 본점",
+category:"양식",
+area:"남포동",
+menu:"치즈크러스트 피자",
+address:"부산 중구 광복중앙로 31",
+desc:"풍부한 치즈가 특징인 부산 유명 피자 맛집",
+image:"https://images.unsplash.com/photo-1579751626657-72bc17010498?w=700"
+},
+{
+name:"송정3대국밥",
+category:"한식",
+area:"서면",
+menu:"돼지국밥 · 수육백반",
+address:"부산 부산진구 서면시장",
+desc:"부산을 대표하는 돼지국밥 전문점",
+image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=700"
+},
+{
+name:"개미집 본점",
+category:"해산물",
+area:"남포동",
+menu:"낙곱새",
+address:"부산 중구 중구로30번길 20-2",
+desc:"매콤한 낙지와 곱창, 새우의 조화",
+image:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=700"
+},
+{
+name:"올바릇식당 기장본점",
+category:"한식",
+area:"기장",
+menu:"꼬막 한상",
+address:"부산 기장군",
+desc:"꼬막을 활용한 다양한 한식 메뉴",
+image:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=700"
+},
+{
+name:"속씨원한대구탕 본점",
+category:"해산물",
+area:"해운대",
+menu:"대구탕",
+address:"부산 해운대구",
+desc:"시원한 국물의 대구탕 전문점",
+image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=700"
+},
+{
+name:"백화양곱창",
+category:"고기",
+area:"남포동",
+menu:"양곱창 구이",
+address:"부산 중구 자갈치로23번길",
+desc:"부산 노포 분위기를 느낄 수 있는 양곱창 맛집",
+image:"https://images.unsplash.com/photo-1558030006-450675393462?w=700"
+},
+{
+name:"삼진어묵 본점",
+category:"분식",
+area:"영도",
+menu:"어묵 · 어묵고로케",
+address:"부산 영도구 태종로99번길 36",
+desc:"부산의 대표적인 어묵 브랜드",
+image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700"
+},
+{
+name:"웨이브온커피",
+category:"카페",
+area:"기장",
+menu:"커피 · 베이커리",
+address:"부산 기장군 장안읍 해맞이로 286",
+desc:"바다 전망을 즐길 수 있는 오션뷰 카페",
+image:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700"
+}
+];
+
+let selectedCategory = "전체";
+
+function setCategory(category, button) {
+  selectedCategory = category;
+
+  document.querySelectorAll(".categories button")
+  .forEach(btn => btn.classList.remove("active"));
+
+  button.classList.add("active");
+  renderRestaurants();
+}
+
+function renderRestaurants() {
+
+  const keyword = document.getElementById("search")
+  .value.trim().toLowerCase();
+
+  const list = document.getElementById("restaurantList");
+
+  const filtered = restaurants.filter(place => {
+
+    const categoryMatch =
+      selectedCategory === "전체" ||
+      place.category === selectedCategory;
+
+    const searchMatch =
+      (place.name + place.area + place.menu + place.address)
+      .toLowerCase().includes(keyword);
+
+    return categoryMatch && searchMatch;
+  });
+
+  list.innerHTML = "";
+
+  if(filtered.length === 0) {
+    list.innerHTML =
+      '<div class="no-result" style="display:block">검색 결과가 없습니다.</div>';
+    return;
+  }
+
+  filtered.forEach(place => {
+
+    const naver =
+      "https://map.naver.com/p/search/" +
+      encodeURIComponent(place.name + " 부산");
+
+    const kakao =
+      "https://map.kakao.com/?q=" +
+      encodeURIComponent(place.name + " 부산");
+
+    const direction =
+      "https://map.naver.com/p/directions/-/" +
+      encodeURIComponent(place.name + " 부산") +
+      "/-/car";
+
+    list.innerHTML += `
+      <article class="card">
+        <img src="${place.image}" alt="${place.name}"
+          onerror="this.src='https://placehold.co/700x400?text=Busan+Food'">
+
+        <div class="card-content">
+          <span class="tag">
+            ${place.category} · ${place.area}
+          </span>
+
+          <h3>${place.name}</h3>
+
+          <p>${place.desc}</p>
+          <p>🍴 대표 메뉴: ${place.menu}</p>
+          <p>📍 ${place.address}</p>
+
+          <div class="map-buttons">
+            <a class="naver" href="${naver}"
+              target="_blank" rel="noopener">
+              네이버 지도
+            </a>
+
+            <a class="kakao" href="${kakao}"
+              target="_blank" rel="noopener">
+              카카오맵
+            </a>
+          </div>
+
+          <a class="direction" href="${direction}"
+            target="_blank" rel="noopener">
+            🚗 네이버 길찾기
+          </a>
+        </div>
+      </article>
+    `;
+  });
+}
+
+renderRestaurants();
+
+</script>
+
+</body>
+</html>
